@@ -1,6 +1,8 @@
 <html>
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="twimo.css" />
+
   <script src="jmo.js"></script>
   <script src="scripts/sample.js"></script>
   <script src="scripts/raphael-min.js" type="text/javascript"></script>
@@ -11,14 +13,23 @@
   <title>Twitter Mosaic</title>
 </head>
 <body>
-  <label for='username'>Twitter ID</label>
-  <input type="text" id='username' value="iamcreative"/>
-  <label for='blocksX'>No. Blocks</label>
-  <input type="text" id='blocksX' value="10"/>
-  <label for='blocksY'>No. Blocks</label>
-  <input type="text" id='blocksY' value="10"/>
-  <button id='view'>View</button>
   <h1>TwiMo</h1>
+  <p><h2>Being a Tweet visualiser requiring a browser with SVG support</h2></p>
+  <label for='username'>Twitter ID:</label>
+  <input type="text" id='username' value="iamcreative"/>
+  <label for='blocksX'>Blocks Wide:</label>
+  <input type="text" id='blocksX' value="9" class='smallBox'/>
+  <label for='blocksY'>Blocks High:</label>
+  <input type="text" id='blocksY' value="9" class='smallBox'/>
+  <label for='blocksY'>Degrees +/-:</label>
+  <input type="text" id='judder' value="20" class='smallBox'/>
+  <label for='renderSpeed'>Render Speed:</label>
+  <select id='renderSpeed'>
+      <option>fast</option>
+      <option selected='true'>medium</option>
+      <option>slow</option>
+  </select>
+  <button id='view'>View</button>  <br/>
    <div id="tmCanvas">
    </div>
 

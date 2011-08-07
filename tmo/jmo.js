@@ -1,10 +1,3 @@
-/**
- * Created by .
- * User: mark
- * Date: 25/06/11
- * Time: 14:29
- * To change this template use File | Settings | File Templates.
- */
 var cFont;
 var iFont;
 var white = "#fff";
@@ -12,12 +5,13 @@ var black = "#000";
 var calmRed = "#CC2213";
 var paper;
 var odd = true;
-
+var username;
 var borderSize = 3;
 var width = 1000;
 var height = 1000;
 var noBlocksWide = 10;
 var noBlocksHigh = 10;
+var judder = 15;
 var totaldrawn = noBlocksWide * noBlocksWide;
 var padRoomX = borderSize * (noBlocksWide + 1);
 var padRoomY = borderSize * (noBlocksHigh + 1);
@@ -26,12 +20,10 @@ var drawPause = 1000;
 
 function allReady() {
     $('#view').click(requestTweets);
-    //getTwitterJson();
     var drawingCanvas = document.getElementById('tmCanvas');
     paper = Raphael(drawingCanvas, width + padRoomX, height + padRoomY + borderSize);
     cFont = paper.getFont("Consolbs", 800);
     iFont = paper.getFont("Consolis", 800, "italic");
-    //drawTweets();
 }
 
 function createBoard() {
@@ -40,60 +32,70 @@ function createBoard() {
     c.attr("fill", white);
 }
 
-function requestTweets()
-{
-    paper.clear();
-
-    var username =  $('#username').val();
+function readFields() {
+    username = $('#username').val();
     var bs = $('#blocksX').val();
-    noBlocksWide =  parseInt(bs);
+    noBlocksWide = parseInt(bs);
     bs = $('#blocksY').val();
-    noBlocksHigh =  parseInt(bs);
+    noBlocksHigh = parseInt(bs);
+    bs = $('#judder').val();
+    judder = parseInt(bs);
+    renderSpeed = $('#renderSpeed option:selected').val();
+    if (renderSpeed == "fast") {
+        drawPause = 1000;
+    }
+    else if (renderSpeed == "slow") {
+        drawPause = 3000;
+    }
+    else {
+        drawPause = 2000;
+    }
 
+}
+function setCalculatedValues() {
     totaldrawn = noBlocksWide * noBlocksHigh;
     padRoomX = borderSize * (noBlocksWide + 1);
     padRoomY = borderSize * (noBlocksHigh + 1);
     blockWidth = width / noBlocksWide;
     height = blockWidth * noBlocksHigh;
-    var drawingCanvas = document.getElementById('tmCanvas');
-    paper = Raphael(drawingCanvas, width + padRoomX + borderSize, height + padRoomY + borderSize);
-    //createBoard();
+}
+function requestTweets() {
+    readFields();
+    setCalculatedValues();
+    //var drawingCanvas = document.getElementById('tmCanvas');
+    //paper = Raphael(drawingCanvas, width + padRoomX + borderSize, height + padRoomY + borderSize);
+    paper.clear();
     liveTweets(username);
 }
 
-function drawTweet(tweetNo, xPos, yPos) {
+function drawTweet(tweetNo, xPos, yPos, odd) {
     var tweet = getInfo(tweets[tweetNo]);
     var boxSize = blockWidth / tweet.side;
     var font;
-    if (odd){
+    if (odd) {
         font = iFont;
     }
-    else{
+    else {
         font = cFont;
     }
-    odd = !odd;
     var textOffset = borderSize + (boxSize / 2);
     var startChar = 0;
     var endChar = tweet.side;
     var yOffset = textOffset;
     for (var textLine = 0; textLine < tweet.side; textLine++) {
         var c = paper.print(xPos, yPos + yOffset, tweet.text.substring(startChar, endChar), font, 1.8 * boxSize);
-        for (var cIndex=0; cIndex < c.length; cIndex++){
-            max = 45;
-            var rotateBy = Math.floor(Math.random() * max * 2) - max;
-            c[cIndex].rotate(rotateBy);
-            //var plusVal = Math.floor(Math.random()*40);
-            //var scaleBy = (80 + plusVal) / 1000.0;
-            //alert(scaleBy);
-           // c[cIndex].scale(scaleBy, scaleBy);
+        for (var cIndex = 0; cIndex < c.length; cIndex++) {
+            var rotateBy = Math.floor(Math.random() * judder * 2) - judder;
+            if (rotateBy != 0) {
+                c[cIndex].rotate(rotateBy);
+            }
         }
         startChar += tweet.side;
         endChar += tweet.side;
         yOffset += boxSize;
     }
-
-       // drawGrid(xPos, yPos,  tweet.side);
 }
+
 function drawTweets() {
     var len = tweets.length;
     var output = "";
@@ -102,25 +104,31 @@ function drawTweets() {
     var tweetNo = 0;
     for (var i = 0; i < totaldrawn; i++) {
 
-        (function(){
+        (function() {
             var tn = tweetNo;
             var x = xPos;
             var y = yPos;
-            setTimeout(function(){
-                drawTweet(tn, x, y);
-            }, i * drawPause );
+            var o = odd;
+            setTimeout(function() {
+                drawTweet(tn, x, y, o);
+            }, i * drawPause);
         })();
 
         xPos += borderSize + width / noBlocksWide;
         if (xPos >= width) {
             xPos = borderSize;
             yPos += borderSize + blockWidth;
+            if ((noBlocksWide % 2) == 0) {
+                //alert(odd);
+                odd = !odd;
+            }
         }
 
         tweetNo++;
         if (tweetNo >= len) {
             tweetNo = 0;
         }
+        odd = !odd;
     }
 }
 
@@ -133,7 +141,7 @@ function drawGrid(startX, startY, side) {
     var bounds = width / noBlocksWide;
     var boxSize = blockWidth / side;
 
-    var yPos = startY ;
+    var yPos = startY;
     var yOffset = bounds;
     var xOffset = 0;
     for (var x = 0; x < side; x++) {
@@ -166,19 +174,15 @@ function getTwitterJson() {
     $('#info').html(output);
 }
 
-function liveTweets(username)
-{
-     var numPosts = 130;
-     var jsonData;
-     var url = "http://twitter.com/status/user_timeline/" + username + ".json?count="+numPosts+"&callback=?";
-     //var url = " http://api.twitter.com/1/statuses/user_timeline.json?screen_name=" + username + "&count="+numPosts+"&callback=?";
+function liveTweets(username) {
+    var numPosts = 130;
+    var jsonData;
+    var url = "http://twitter.com/status/user_timeline/" + username + ".json?count=" + numPosts + "&callback=?";
 
-     $.getJSON( url, function( data ){
-         tweets = data;
-         drawTweets();
-     //jsonData = JSON.stringify(data);
-     //alert(jsonData);
-     });
+    $.getJSON(url, function(data) {
+        tweets = data;
+        drawTweets();
+    });
 }
 
 function getInfo(tweet) {
