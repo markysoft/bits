@@ -1,0 +1,60 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>
+	jQuery Bing Search Demo
+</title><link rel="Stylesheet" type="text/css" href="core.css" /><link rel="Stylesheet" type="text/css" href="presentation.css" />
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="functions.js"></script>
+
+</head>
+<body>
+    <form name="form1" method="post" action="default.aspx" id="form1">
+<div>
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKMTA1NDkzNTkwMmRkUBcfOVmyJJnQvRwYsVz5r2EjVEw=" />
+</div>
+
+    <div class="container">
+        <div class="line header">
+            <div class="header-background">
+                <h1>jQuery Bing</h1>
+                <h2>Searching Bing using jQuery AJAX</h2>
+            </div>
+        </div>
+        <div class="line introduction">
+            <h3>What does this demonstration show?</h3>
+            <p>
+                This demo illustrates how to make a call to the Microsoft Bing search engine using jQuery.
+                It uses the Bing API version 2.0 to demonstrate the use of the Web SourceType over the JSON Protocol.
+            </p>
+        </div>
+        <div class="line search-content">
+            <div class="column col-threefifths">
+                <h3 id="results-header"></h3>
+                <p id="results-summary"></p>
+                <div id="search-result">
+                    <h3>Search Results</h3>
+                    <div id="result-aggregates" class="results"></div>
+                    <ul id="result-list" class="results">
+                    </ul>
+                    <ul id="result-navigation" class="result-navigation">
+                        <li id="prev">&laquo;</li>
+                        <li id="next">&raquo;</li>
+                    </ul>
+                </div>
+                <p id="error-list">
+                </p>
+            </div>
+            <div class="column last-col">
+                <h3>Search for:</h3>
+                <p>
+                    <input id="txtQuery" type="text" title="Search Terms" /><button id="btnSearch" type="button" title="Go">Go</button>
+                </p>
+            </div>
+        </div>
+    </div>
+    </form>
+</body>
+</html>
