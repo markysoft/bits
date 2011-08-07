@@ -45,7 +45,7 @@ function readFields() {
         drawPause = 1000;
     }
     else if (renderSpeed == "slow") {
-        drawPause = 3000;
+        drawPause = 4000;
     }
     else {
         drawPause = 2000;
